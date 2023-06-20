@@ -1,10 +1,13 @@
 import random
+import os
 from sqla_wrapper import SQLAlchemy
 from flask import Flask, render_template, request, make_response
 
 app = Flask(__name__)
 
-db = SQLAlchemy("sqlite:///database.sqlite")
+db_url = os.getenv("DATABASE_URL", "sqlite:///db.sqlite").replace("postgres://", "postgresql://", 1)
+db = SQLAlchemy(db_url)
+
 
 
 class User(db.Model):

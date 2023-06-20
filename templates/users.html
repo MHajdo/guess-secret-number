@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">email</th>
+        <th scope="col">secret number</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.secret_number }}</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
+<a href="/"><button type="button" class="btn btn-warning mt-4">Home</button></a>
+{% endblock content %}

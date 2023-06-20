@@ -1,12 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="center">
+<div class="container text-center">
     <form method="post" action="/result">
-        <input class="rounded" type="text" name="guess" placeholder="Enter your guess">
-        <br>
-
-        <button type="submit">Submit</button>
+        <input class="form-control" type="text" name="guess" placeholder="Enter your guess (1-45)" autocomplete="off">
+        <button type="submit" class="btn btn-primary m-4">Submit</button>
     </form>
+</div>
+<div class="ol-3 p-3 mb-2">
+    <a href="/users/register">
+        <button type="button" class="btn btn-success">Register here</button>
+    </a>
+</div>
+<div class="ol-3 p-3 mb-2">
+    <a href="/users">
+        <button type="button" class="btn btn-info">See all users</button>
+    </a>
 </div>
 {% endblock content %}

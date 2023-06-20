@@ -1,7 +1,19 @@
 import random
+from sqla_wrapper import SQLAlchemy
 from flask import Flask, render_template, request, make_response
 
 app = Flask(__name__)
+
+db = SQLAlchemy("sqlite:///database.sqlite")
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String, unique=True)
+    secret_number = db.Column(db.Integer, unique=False)
+
+
+db.create_all()
 
 
 @app.route("/", methods=["GET"])
@@ -32,6 +44,26 @@ def result():
     elif guess < secret_number:
         message = "The secret number is bigger. Try again."
         return render_template("result.html", message=message)
+
+
+@app.route('/users')
+def users_page():
+    users = db.query(User).all()
+    return render_template('users.html', users=users)
+
+
+@app.route('/users/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    else:
+        secret_num = random.randint(1, 45)
+        email_addr = request.form.get('email')
+        new_user = User(email=email_addr, secret_number=secret_num)
+
+        new_user.save()
+
+        return render_template('message.html', type='success', message="Successfully created new user", redirect=True)
 
 
 if __name__ == '__main__':

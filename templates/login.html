@@ -5,25 +5,21 @@
 {% block content %}
 
 {% if errMsg %}
-<p class="alert alert-danger">{{ errMsg }}</p>
+<p class="alert alert-danger mt-3">{{ errMsg }}</p>
 {% endif %}
 <h3>Welcome! Please fill out the form.</h3>
 
-<form method="post" action="/users/register">
+<form method="post" action="/users/login">
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
         <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
         <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
     </div>
     <div class="mb-3">
-        <label for="pass1" class="form-label">Password</label>
-        <input type="password" name="pass1" class="form-control" id="pass1" aria-describedby="emailHelp">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="password" aria-describedby="emailHelp">
     </div>
-    <div class="mb-3">
-        <label for="pass2" class="form-label">Repeat password</label>
-        <input type="password" name="pass2" class="form-control" id="pass2" aria-describedby="emailHelp">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Login</button>
 </form>
 <a href="/"><button type="button" class="btn btn-warning mt-4">Home</button></a>
 {% endblock content %}

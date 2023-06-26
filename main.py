@@ -1,5 +1,6 @@
 import random
-import os
+import uuid
+import hashlib
 from sqla_wrapper import SQLAlchemy
 from flask import Flask, render_template, request, make_response
 
@@ -13,13 +14,18 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String, unique=False)
     secret_number = db.Column(db.Integer, unique=False)
+    session_token = db.Column(db.String)
 
 
 db.create_all()
 
 
 def get_user():
-    return request.cookies.get('user_logged_in')
+    token = request.cookies.get('session_token')
+    if token is None:
+        return None
+    user = db.query(User).filter_by(session_token=token).first()
+    return user
 
 
 @app.route("/", methods=["GET"])
@@ -73,7 +79,9 @@ def register():
         if email_addr == '' or email_addr is None:
             return render_template('register.html', errMsg="Email field should be filled with a valid email address.")
 
-        new_user = User(email=email_addr, secret_number=secret_num, password=password1)
+        hashed_pass = hashlib.sha256(password1.encode()).hexdigest()
+
+        new_user = User(email=email_addr, secret_number=secret_num, password=hashed_pass)
 
         new_user.save()
 
@@ -89,11 +97,18 @@ def login():
         password = request.form.get('password')
 
         user = db.query(User).filter_by(email=email_addr).first()
-        if user.password == password:
+
+        hashed_pass = hashlib.sha256(password.encode()).hexdigest()
+
+        if user.password == hashed_pass:
             response = make_response(
                 render_template('message.html', type='success', message='Successfully logged in', redirect=True)
             )
-            response.set_cookie('user_logged_in', 'True')
+            session_token = str(uuid.uuid4())
+
+            user.session_token = session_token
+            response.set_cookie('session_token', session_token)
+            user.save()
             return response
         else:
             return render_template('login.html', errMsg='Login credentials were not correct!')

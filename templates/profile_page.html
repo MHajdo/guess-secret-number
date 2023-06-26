@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{%  block title %}Profile page - {{ user.email }}{% endblock title %}
+
+{% block content %}
+<h1>Hello {{ user.email }}</h1>
+<p>Your data is as follows:</p>
+<dl>
+  <dt>Id</dt>
+  <dd>{{ user.id }}</dd>
+  <dt>Email</dt>
+  <dd>{{ user.email }}</dd>
+  <dt>Session token</dt>
+  <dd>*********-****-****-****-{{ user.session_token[24:] }}</dd>
+  <dt>Avatar</dt>
+  <dd><img src ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh80K2dKoYTZ3aiFlA3ia9qyZfL1kfrSE9aQ&usqp=CAU" alt="avatar" height="30px"></dd>
+</dl>
+<a class="btn btn-primary" href="/users/profile/edit">Edit your profile</a>
+<a class="btn btn-danger" href="/users/profile/delete">Delete your profile</a>
+{% endblock content %}

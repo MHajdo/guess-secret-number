@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{%  block title %}Edit profile - {{ user.email }}{% endblock title %}
+
+{% block content %}
+{% if message %}
+<p class="alert alert-warning">{{ message }}</p>
+{% endif %}
+
+<h1>Hello {{ user.email }}!</h1>
+<p>Your data is as follows:</p>
+
+<form action="/users/profile/edit" method="POST">
+  <div class="mb-3">
+    <label for="email" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="email" name="email" placeholder="{{ user.email }}">
+  </div>
+  <div class="mb-3 col">
+    <label for="password1" class="form-label">Password</label>
+    <input type="password" class="form-control {% if message %}is-invalid{% endif %}" id="password1" name="password1">
+    {% if message %}
+    <div class="invalid-feedback">Passwords should match</div>
+    {% endif %}
+  </div>
+  <div class="mb-3 col">
+    <label for="password2" class="form-label">Repeat password</label>
+    <input type="password" class="form-control {% if message %}is-invalid{% endif %}" id="password2" name="password2">
+    {% if message %}
+    <div class="invalid-feedback">Passwords should match</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+  <button type="submit" class="btn btn-primary">Update profile data</button>
+  </div>
+</form>
+{% endblock content %}

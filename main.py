@@ -2,7 +2,7 @@ import random
 import uuid
 import hashlib
 from sqla_wrapper import SQLAlchemy
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, redirect, url_for
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String, unique=False)
     secret_number = db.Column(db.Integer, unique=False)
-    session_token = db.Column(db.String)
+    session_token = db.Column(db.String, unique=True)
 
 
 db.create_all()
@@ -98,6 +98,9 @@ def login():
 
         user = db.query(User).filter_by(email=email_addr).first()
 
+        if user is None:
+            return render_template('login.html', errMsg='Login credentials were not correct!')
+
         hashed_pass = hashlib.sha256(password.encode()).hexdigest()
 
         if user.password == hashed_pass:
@@ -112,6 +115,51 @@ def login():
             return response
         else:
             return render_template('login.html', errMsg='Login credentials were not correct!')
+
+
+@app.route('/users/profile')
+def profile_page():
+    user = get_user()
+    if user is None:
+        return redirect(url_for('login'))
+    else:
+        return render_template('profile_page.html', user=user)
+
+
+@app.route('/users/profile/edit', methods=['GET', 'POST'])
+def profile_page_edit():
+    user = get_user()
+    if user is None:
+        return redirect(url_for('login'))
+    else:
+        if request.method == 'GET':
+            return render_template('profile_page_edit.html', user=user)
+        else:
+            email = request.form.get('email')
+            password1 = request.form.get('password1')
+            password2 = request.form.get('password2')
+
+            if email != user.email:
+                user.email = email
+
+            if password2 == password1:
+                hashed_pass = hashlib.sha256(password1.encode()).hexdigest()
+                user.password = hashed_pass
+            else:
+                return render_template('profile_page_edit.html', user=user, message='The passwords did not match')
+
+            user.save()
+            return redirect(url_for('profile_page'))
+
+
+@app.route('/users/profile/delete', methods=['GET', 'POST'])
+def profile_page_delete():
+    if request.method == 'POST':
+        user = get_user()
+        user.delete()
+        return render_template('message.html', message='Account deleted', redirectHome=True)
+    else:
+        return render_template('profile_page_delete.html')
 
 
 if __name__ == '__main__':

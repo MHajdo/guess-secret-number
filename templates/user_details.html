@@ -6,8 +6,7 @@
 <div class="card" style="width: 18rem;">
   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh80K2dKoYTZ3aiFlA3ia9qyZfL1kfrSE9aQ&usqp=CAU" class="card-img-top" alt="avatar">
   <div class="card-body">
-    <h5 class="card-title">Hello {{ user.email }}</h5>
-    <p class="card-text">Your data is as follows:</p>
+    <h5 class="card-title">{{ user.email }}</h5>
   </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item">Id: {{ user.id }}</li>
@@ -17,8 +16,8 @@
   </ul>
   <div class="card-body">
     <div class="d-grid gap-2">
-      <a href="/users/profile/edit" class="card-link btn btn-primary">Edit your profile</a>
-      <a href="/users/profile/delete" class="card-link btn btn-danger">Delete your profile</a>
+      <a href="/users" class="card-link btn btn-info">Users</a>
+      <a href="/" class="card-link btn btn-success">Home</a>
     </div>
   </div>
 </div>

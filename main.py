@@ -162,5 +162,11 @@ def profile_page_delete():
         return render_template('profile_page_delete.html')
 
 
+@app.route('/user/<user_id>', methods=["GET"])
+def user_details(user_id):
+    user = db.query(User).get(int(user_id))
+    return render_template('user_details.html', user=user)
+
+
 if __name__ == '__main__':
     app.run(use_reloader=True)

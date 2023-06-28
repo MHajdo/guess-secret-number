@@ -2,7 +2,7 @@ import random
 import uuid
 import hashlib
 from sqla_wrapper import SQLAlchemy
-from flask import Flask, render_template, request, make_response, redirect, url_for
+from flask import Flask, render_template, request, make_response, redirect, url_for, abort
 
 app = Flask(__name__)
 
@@ -63,6 +63,14 @@ def result():
 def users_page():
     users = db.query(User).all()
     return render_template('users.html', users=users)
+
+
+@app.route('/user/<user_id>', methods=["GET"])
+def user_details(user_id):
+    user = db.query(User).get(int(user_id))
+    if user is None:
+        abort(404)
+    return render_template('user_details.html', user=user)
 
 
 @app.route('/users/register', methods=['GET', 'POST'])
@@ -160,12 +168,6 @@ def profile_page_delete():
         return render_template('message.html', message='Account deleted', redirectHome=True)
     else:
         return render_template('profile_page_delete.html')
-
-
-@app.route('/user/<user_id>', methods=["GET"])
-def user_details(user_id):
-    user = db.query(User).get(int(user_id))
-    return render_template('user_details.html', user=user)
 
 
 if __name__ == '__main__':

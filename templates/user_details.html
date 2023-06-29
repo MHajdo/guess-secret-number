@@ -12,7 +12,9 @@
     <li class="list-group-item">Id: {{ user.id }}</li>
     <li class="list-group-item">Email: {{ user.email }}</li>
     <li class="list-group-item">Session token:
+      {% if user.session_token %}
       *********-****-****-****-{{ user.session_token[24:] }}</li>
+      {% endif %}
   </ul>
   <div class="card-body">
     <div class="d-flex flex-column gap-2">

@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 db = SQLAlchemy("sqlite:///database.sqlite")
 
+MIN_SECRET = 1
+MAX_SECRET = 45
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,14 +33,17 @@ def get_user():
 @app.route("/", methods=["GET"])
 def index():
     user = get_user()
-    secret_number = request.cookies.get("secret_number")
 
     response = make_response(render_template("index.html", user=user))
-    if not secret_number:
-        new_secret = random.randint(1, 45)
-        response.set_cookie("secret_number", str(new_secret))
 
     return response
+
+
+def set_new_secret_num_for_user():
+    user = get_user()
+
+    user.secret_number = random.randint(MIN_SECRET, MAX_SECRET)
+    user.save()
 
 
 @app.route("/result", methods=["POST"])
@@ -49,7 +54,7 @@ def result():
     if guess == secret_number:
         message = f"Congratulations! The secret number is {secret_number}"
         response = make_response(render_template("result.html", message=message))
-        response.set_cookie("secret_number", str(random.randint(1, 45)))
+        set_new_secret_num_for_user()
         return response
     elif guess > secret_number:
         message = "The secret number is smaller. Try Again"
@@ -78,7 +83,7 @@ def register():
     if request.method == 'GET':
         return render_template('register.html')
     else:
-        secret_num = random.randint(1, 45)
+        secret_num = random.randint(MIN_SECRET, MAX_SECRET)
         email_addr = request.form.get('email')
         password1 = request.form.get('pass1')
         password2 = request.form.get('pass2')

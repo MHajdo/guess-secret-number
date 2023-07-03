@@ -49,7 +49,8 @@ def set_new_secret_num_for_user():
 @app.route("/result", methods=["POST"])
 def result():
     guess = int(request.form.get("guess"))
-    secret_number = int(request.cookies.get("secret_number"))
+    user = get_user()
+    secret_number = user.secret_number
 
     if guess == secret_number:
         message = f"Congratulations! The secret number is {secret_number}"

@@ -1,2 +1,4 @@
 .idea
 venv/
+database.sqlite
+db.sqlite
